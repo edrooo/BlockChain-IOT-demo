@@ -4,6 +4,14 @@ networks:
   default:
 
 services:
+couchdb:
+    image: hyperledger/fabric-couchdb
+    container_name: couchdb 
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "5984:5984"
  orderer.kevin.kongyixueyuan.com:
     image: hyperledger/fabric-orderer
     container_name: orderer.kevin.kongyixueyuan.com
@@ -116,6 +124,12 @@ services:
       - CORE_PEER_LOCALMSPID=org1.kevin.kongyixueyuan.com
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
       - CORE_PEER_TLS_SERVERHOSTOVERRIDE=peer1.org1.kevin.kongyixueyuan.com
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    depends_on: 
+      - couchdb
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     volumes:
